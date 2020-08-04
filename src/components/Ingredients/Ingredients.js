@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import IngredientForm from "./IngredientForm";
@@ -7,6 +7,23 @@ import Search from "./Search";
 
 const Ingredients = (props) => {
   const [userIngredients, setUserIngredients] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("https://react-hooks-update-227d7.firebaseio.com/ingredients.json")
+      .then((response) => {
+        const loadedIngredients = [];
+        for (const key in response.data) {
+          loadedIngredients.push({
+            id: key,
+            title: response.data[key].title,
+            amount: response.data[key].amount,
+          });
+        }
+        setUserIngredients(loadedIngredients);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const addIngredientHandler = (ingredient) => {
     axios
