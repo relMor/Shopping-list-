@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
@@ -8,10 +9,18 @@ const Ingredients = (props) => {
   const [userIngredients, setUserIngredients] = useState([]);
 
   const addIngredientHandler = (ingredient) => {
-    setUserIngredients((prevIngredients) => [
-      ...prevIngredients,
-      { id: Math.random().toString(), ...ingredient },
-    ]);
+    axios
+      .post(
+        "https://react-hooks-update-227d7.firebaseio.com/ingredients.json",
+        ingredient
+      )
+      .then((response) => {
+        setUserIngredients((prevIngredients) => [
+          ...prevIngredients,
+          { id: response.data.name, ...ingredient },
+        ]);
+      })
+      .catch((err) => console.log(err));
   };
 
   const removeIngredientHandler = (ingredientId) => {
